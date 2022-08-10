@@ -1,1 +1,3 @@
--8.upto(8){|i|print i%26>0?"# : "[[(i%26-13).abs,(i/8).abs].max%4]*2:$/}
+0.upto(8) do |i|
+0.upto(15) do |j|
+    puts "#:"[i&&i==16]
