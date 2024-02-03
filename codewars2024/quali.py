@@ -8,7 +8,7 @@ for i in range(2000, 4001, 12):
     dig = 0
     while tmp>0:
         dig += tmp % 10
-        tmp = tmp // 10
+        tmp //= 10
     if dig == 8:
         ret +=1
 
