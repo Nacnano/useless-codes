@@ -25,7 +25,7 @@ def create_favicon():
     text_width, text_height = text_bbox[2] - text_bbox[0], text_bbox[3] - text_bbox[1]
 
     # Calculate the position to center the text
-    text_position = ((size[0] - text_width) // 2, (size[1] - text_height) // 2)
+    text_position = ((size[0] - text_width) // 2 + 1, (size[1] - text_height) // 2 - 1)
 
     # Draw the text onto the image
     draw.text(text_position, text, font=font, fill=text_color)
