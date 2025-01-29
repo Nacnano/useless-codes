@@ -15,7 +15,6 @@ def func(n, k, t):
             print(dp[i][j], end=" ")
         print("\n")
         
-        
     return dp[n][t]
 
 print(func(4, 10, 7))
