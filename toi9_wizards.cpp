@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-unordered_map<long long, pair<pair<int, int> , pair<int, int> > > mm;
+unordered_map<, pair<pair<int, int> , pair<int, int> > > mm;
 
 int x[5][1505], y[5][1505];
 
