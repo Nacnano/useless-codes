@@ -18,8 +18,6 @@ Inbound.csv
 Products coming in (with dates)
 Outbound.csv
 Products going out (with dates)
-Forecast.xlsx
-Expected demand (monthly)
 MaterialMaster.csv
 Product attributes (type, shelf life, etc.)
 WH Calendar.xlsx
@@ -242,7 +240,6 @@ Warehouse Capacity ที่ให้มา เป็นตัวเลขตา
  (เช่น ถ้าสต๊อกเก่านานไปจะต้อง discard หรือ downgrade)
 
 
-Forecast.xlsx ที่ให้มา ถือเป็นแผนยอดขายที่ confirm แล้ว หรือเป็นแค่ประมาณการ?
 
 
 ใน WH Calendar มีข้อมูลวันหยุด/วันทำงาน ที่กระทบกับการรับหรือส่งสินค้าหรือไม่?
@@ -308,11 +305,7 @@ Example - due to higher inbound than planned, ask for extra 10 Kilo Ton for the 
 	Transfer cost per container (24.75MT)	"Transportation cost per container.
 Potential overflow prevention, transfer some materail batch to other warehouse. Material needs to be transfered by a 24.75MT container.
 Example - due to lower outbound than planned, shipped out 110 MT of material to other warehouses. Additional cost = this column * 5 (5 containers requried)"
-		
-	Forecast	Forecasted outbound (sales) and maximum capacity of each warehouse
-	Predicted Outbound (KT)	Outbound forecast of each month. Can be compare with actual in Outbound.
-	Predicted Inventory (KT)	Inventory forecast of each month. Can be compare with actual in Inventory.
-		
+	
 	Appendix	
 	MT	Metric Ton
 	KT	Kiloton (1000MT)
@@ -464,8 +457,11 @@ DATE,MATERIAL_NAME,PLANT_NAME,INBOUND_QTY_MT,OUTBOUND_QTY_MT,MODE_OF_TRANSPORT,U
 01-04-2024,MAT-0001,CHINA-WAREHOUSE,,,,,,,,P-002,3,40
 
 
-Please generate the code for all the machine learning model process (eda, feature engineering, model, evaluation, prediction)
+Please generate the code in one Python file for all the machine learning model process (eda, feature engineering, model, evaluation, prediction)
+Please try several models and choose the best one
 Please also predict all the values in the next year, 2025
+The base directory is in Kaggle "/kaggle/input/exxon-hack-data/file_name.csv"
+At the end, Please summarize the evaluation and generate the visualization of the prediction values
 
 DO NOT DO ANYTHING ABOUT THE ALERT SYSTEM. JUST THE MODEL AND PREDICTION PART
 
