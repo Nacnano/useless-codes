@@ -1,0 +1,513 @@
+I am doing a hackathon. I want you to create machine learning models to predict. 
+Please try multiple models. 
+Please try both on all materials and try on each polymer type
+Please think of a way to evaluate the result
+
+Here is the prediction info
+TASK 1 Overflow prediction
+Alert Overflow/Shortage 
+"INFO: การ foresee overflow และรองรับสถานการณ์
+ปกติพี่ไอรินจะดูกราฟข้างบนเป็นหลัก พยายามไม่ให้พื้นที่สีเหลือง (projected ending inventory) แตะเส้นฟ้า (inventory level) เด็ดขาด ถ้า 2 june พี่ไอรินมาทำดาต้าใหม่ ละอาทิตย์ที่ 16, 23 june พี่ไอรินเห็นว่ามันจะมีของ inbound imported เข้ามาเยอะ(แท่งสีฟ้า) พี่เค้าก็จะกลับไปดูที่คลังว่ามันจะพอมีของออกไปได้มั้ยโดยการ drive sales พี่ต้องรีบไป drive sales ก่อนเพื่อให้มีของ outbound ส่งออกไป ไม่งั้นพี่เค้าอาจจะต้อง “trigger ตัว overflow ออก” ด้วยความที่บางทีของมาจาก US ขนส่งด้วยเรือ ทีมก็ไม่สามารถหยุดการส่งได้ ทำให้สุดท้ายของ overflow จริงๆ พี่เค้าก็จะคุยกับ WH ขอเพิ่ม inventory capacity ในช่วงสองเดือนถัดไป ทุกแอคชั่นที่พยายามแก้ไขของที่ overflow มี cost หมด ส่วนมากพี่เค้าจะ foresee ได้อยู่แล้วว่าจะล้นรึเปล่าล่วงหน้า 4 อาทิตย์ ซึ่งเวลาเห็นว่าของกำลังจะล้น ส่วนมากพี่เค้าจะไม่ trigger overflow แต่ไปนั่งไล่บี้ sales มากกว่า พูดฝั่งขายว่า ยูต้องไปขายแล้ว นะ ต้องเอาของออกแล้วนะ Triggering overflow จะเป็นแอคชั่นสุดท้ายที่พี่เค้าทำ ไม่มีระบบแจ้งเตือนเกี่ยวกับสินค้าเข้าออกหรือเมื่อปริมาณถึงระดับนึง พี่ไอรินดูกราฟเอง manually"
+SOLUTION: ทำตัวแจ้งเตือนสำหรับแจ้งว่าเวลาที่ของมันเหลือน้อยแล้ว หรือของจะ Overflow แล้วจะแจ้งไปยัง USER ซึ่ง จุดที่เน้นคือ Healthy Inventory ควรอยู่ที่ 70-80% ไม่เกินนี้ 
+WHAT TO DO: ทำเป็น ALERT DASHBOARD แจ้งเตือนว่าตัวไหนเหลือของน้อย และของล้นคลัง โดยอาจจะปลั๊กอินกับ email, line(?) เพื่อแจ้งเตือนว่าออเดอร์เหลือน้อยแล้วนะ
+"IDEA: สร้างอีกแถวนึงขึ้นมาเพื่อที่จะใช้ค่าที่จะต้องแจ้งเตือนโดยสูตร คือ ระยะเวลาส่ง (lead time) + ระยะเวลาปลอดภัย (safety stock) = ระยะปลอดภัยในการซื้อ
+
+วันที่เหลือในการใช้ของ (Day On Hand) DOH = ปริมาณในสต็อคปัจจุบัน (Quantity) / ปริมาณการใช้ต่อเดือน (Usage)
+
+ตัวอย่าง: ปริมาณการใช้ = 500 ตัน/เดือน, 
+ปริมาณใช้ในสต็อค = 1,500 ตัน,
+ระยะเวลาปลอดภัย (safety stock) = 15 วัน
+ระยะเวลาส่ง (lead time) = 30 วัน
+
+ดังนั้น ระยะปลอดภัยในการซื้อ = 30 + 15 = 45 วัน
+DOH = 1,500/500 = 3 เดือน, 90 วัน"
+
+TASK 2 Shelf Life prediction
+Shelf Life Alert & downgraded material
+INFO: ปกติการบริหารโกดังมันใช้ FIFO (Fist In First Out) ของที่มาก่อนออกก่อนซึ่งปกติมันควรจะไม่มีปัญหาในเคสที่ product ตัวนั้นขายได้ดีอยู่แล้ว แต่ถ้าสมมติมันมี product ที่ขายไม่ค่อยออกละ จะเกิดอะไรขึ้น
+SOLUTION: ทำตัวแจ้งเตือนสำหรับแจ้งว่าเวลาที่ของมันใกล้หมดอายุแล้วจะแจ้งไปยัง USER
+WHAT TO DO: ทำเป็น ALERT DASHBOARD แจ้งเตือนว่าตัวไหนอายุเหลือน้อย โดยอาจจะปลั๊กอินกับ email, line(?) เพื่อแจ้งเตือนว่าของใกล้หมดอายุแล้วเนะ
+"IDEA: สร้างอีกแถวนึงขึ้นมาเพื่อที่จะใช้ค่าที่จะต้องแจ้งเตือนโดยสูตร คือ วันที่ของเข้าวันแรก (ETA) + Shelf Life (SL) = วันสุดท้ายที่ของหมดอายุ (End_Date)
+
+วันที่เหลือก่อนของหมดอายุ = วันสุดท้ายที่ของหมดอายุ (End_Date) - วันที่ปัจจุบัน (Now)
+
+ตัวอย่าง: ของเข้าวันที่ 1/1/2025 จำนวน 1,000 ตัน
+Shelf Life (SL) = 3 เดือน
+ดังนั้นวันสุดท้ายที่หมดอายุ = 1/1/2025 + 90 วัน = ประมาณวันที่ 1/4/2025
+ปัจจุบันวันนี้วันที่ 1/3/2025 เท่ากับว่าวันที่เหลือก่อนของหมดอายุ = 1/4/2025 - 1/3/2025 = 30 วัน"
+
+
+TASK 3 Sales prediction
+Forecast Sales
+"INFO: ทางฝั่งเซลล์จะไปดูประวัติที่ผ่านมาว่าขายได้เท่าไหร่ในสามเดือนที่ผ่านมา แล้วเค้าจะเอาข้อมูลนั้นมาใช้ forecast ว่าสามเดือนข้างหน้า demand จะเป็นเท่าไหร่
+เค้าก็จะมีบวกลบเปอเซนของเค้าว่าช่วงนี้ supply ใน market มันเยอะกว่า demand ซึ่งอาจจะต้อง forecast demand ให้น้อยลง สรุปคือมันมาจาก historical data + ปสก.จากการทำงาน ไม่ได้ใช้โมเดลอะไรเลย ในตอนนนี้สมมติ กำหนด Sale target ไว้ที่ 100 แต่ยอด Actual Outbound จริงๆ อาจจะแค่ 30 เลยต้องไปปรับลดทั้ง ฝ่าย sale และ inbound ต้องการ model ที่วิเคราะห์ให้ Accurate มากขึ้น"
+SOLUTION: ต้องการโมเดลสักตัวเพื่อที่จะทำนายปริมาณที่จะขายในแต่ละเดือน แล้วใช้ตัวนี้ในการเทียบกับ Sale's Forecast จากทีม Sale (อาจจะเป็น ที่แนคเสนอ วิเคราะห์ Customer เป็นกลุ่มๆตาม volume การซื้อ & วิเคราะห์วันหยุดสำคัญหรือ Season)
+WHAT TO DO: โมเดลสำหรับ forecast ปริมาณขายในแต่ละเดือน >>
+
+
+
+Here is the details of the hackathon
+
+🔵 Problem Statement
+"How might we optimize & predict chemicals product inventory to prevent inventory overflow?"
+Goal: Prevent stock exceeding warehouse capacity by predicting future inventory trends.
+
+✅ Step-by-Step Solution Plan
+
+Step 1: Understand Your Inputs (What Data Do You Have?)
+From your slide and uploaded spreadsheets:
+Dataset
+Purpose
+Inventory.csv
+Current stock levels (monthly)
+Inbound.csv
+Products coming in (with dates)
+Outbound.csv
+Products going out (with dates)
+Forecast.xlsx
+Expected demand (monthly)
+MaterialMaster.csv
+Product attributes (type, shelf life, etc.)
+WH Calendar.xlsx
+Working days or capacity constraints
+OperationCost.csv
+Optional: cost insights (overflow, D&D)
+
+
+Step 2: Define the Target Metric
+You want to predict total inventory for each future month and flag if it will exceed warehouse capacity.
+Formula:
+ InventoryMonth=Prev Inventory+Inbound−Outbound\text{Inventory}_{\text{Month}} = \text{Prev Inventory} + \text{Inbound} - \text{Outbound}InventoryMonth​=Prev Inventory+Inbound−Outbound
+Compare this with:
+
+
+Warehouse Max Capacity (constant)
+
+
+Set threshold alerts (e.g., ≥ 90% = warning)
+
+
+
+Step 3: Prepare Your Data
+🛠 You’ll need to:
+Aggregate:
+
+
+Inbound and Outbound volumes by month
+
+
+Extract:
+
+
+Inventory for the 1st of each month
+
+
+Normalize:
+
+
+Ensure date formats match across datasets
+
+
+👉 You’ve already uploaded this. I can help you generate the code to clean and combine.
+
+Step 4: Build the Forecast Model
+Build a predictive model to project next month’s inventory.
+🔧 Option 1: Rule-Based Projection
+Simple, explainable, and great for first version:
+python
+CopyEdit
+future_inventory = last_inventory + forecasted_inbound - forecasted_outbound
+
+🤖 Option 2: Machine Learning Model (if needed)
+Use features like historical inventory, inbound, outbound, polymer type
+
+
+Models: XGBoost, Linear Regression, or LSTM (for time series)
+
+
+
+Step 5: Create Overflow Risk Alerts
+Set up logic to flag:
+🔴 High Risk = Inventory ≥ Capacity
+
+
+🟠 Medium Risk = Inventory ≥ 90% Capacity
+
+
+🟢 Safe = Inventory < 90%
+
+
+
+Step 6: Visualize It
+Create charts for:
+Inventory vs Capacity (monthly line/bar graph)
+
+
+Material-level forecast
+
+
+Risk levels (color-coded table or dashboard)
+
+
+
+Step 7: Build Optimizations (Optional, Advanced)
+Once predictive model works:
+Suggest which SKUs to reduce
+
+
+Push shipment delays for low-demand SKUs
+
+
+Simulate scenarios with different outbound plans
+
+
+
+🧠 Final Output Ideas
+You could turn this into:
+A dashboard (e.g., using Excel, Power BI, or Python Dash)
+
+
+A planner-assist tool (CSV input → risk prediction output)
+
+
+GenAI layer (optional): Ask questions like
+
+
+ "Will I have overflow in August?" → uses your model to answer
+
+
+
+
+
+
+📦 Possible Reasons for Delayed Outbound Shipments
+1. 🚛 Transportation Issues
+Lack of trucks or container space to move goods.
+
+
+Driver shortages or scheduling delays.
+
+
+Port or road congestion affecting pickups.
+
+
+2. 📄 Incomplete Delivery Documentation
+Missing or delayed export paperwork, customs clearance, or invoices.
+
+
+Errors in documents that cause shipment to be held back.
+
+
+3. 📦 Sales Order Not Ready or Cancelled
+Customers delayed or changed their orders.
+
+
+Sales demand lower than expected = fewer goods needed.
+
+
+4. 🏭 Warehouse Operational Constraints
+Manpower shortages for loading operations.
+
+
+Equipment downtime (e.g., forklifts, cranes).
+
+
+Poor warehouse coordination or space congestion causing delays in picking & staging.
+
+
+5. 🌍 External Factors
+Weather issues, strikes, or holidays affecting logistics.
+
+
+Port/terminal delays (common with international shipping).
+
+
+6. 📊 Forecasting or Planning Inaccuracy
+Overestimated outbound volume in planning phase.
+
+
+Mismatch between planned vs actual demand.
+
+
+
+🧠 Summary:
+The delayed outbound in Week 3 likely happened due to a combination of logistics, warehouse execution, and demand-side issues — causing only 20 containers to leave instead of the planned 50.
+To confirm the exact cause, you'd usually look into:
+Transportation schedules
+
+
+Order fulfillment reports
+
+
+Warehouse staffing and operational logs
+
+
+External disruptions during that week
+
+
+Let me know if you want a sample root-cause slide or action plan to fix this issue!
+
+
+💼 คำถามสำหรับ Business Consultant (ธุรกิจ)
+📌 ด้าน Impact และการนำไปใช้จริง
+เวลาที่เกิดปัญหา Inventory Overflow จริง ๆ บริษัทจะได้รับผลกระทบในด้านใดบ้าง?
+ (เช่น ค่า D&D, ค่าขนส่งเพิ่ม, สินค้าชำรุด หรือโอกาสขายที่หายไป)
+
+
+ปัจจุบันใครเป็นคนที่ได้รับผลกระทบมากที่สุดเมื่อเกิด Overflow?
+ (Planner, ทีมคลังสินค้า, ฝ่ายการเงิน หรืออื่น ๆ?)
+
+
+บริษัทมีเกณฑ์หรือความคาดหวังในเรื่องความแม่นยำของ Forecast Inventory ประมาณกี่เปอร์เซ็นต์?
+ (เช่น 80% ก็พอหรือคาดหวัง 95% ขึ้นไป)
+
+
+ถ้าเราสามารถเตือนล่วงหน้าได้ว่าคลังจะ Overflow ในเดือนใด จะมีแผนหรือการจัดการแบบใดที่ทีมวางไว้?
+ (เช่น ดึงการขายขึ้นมาเร็ว, เลื่อน inbound, เร่ง outbound)
+
+
+ในชีวิตจริง planner ใช้เครื่องมือหรือขั้นตอนใดในการวางแผน inventory?
+ (เช่น Excel, SAP, ระบบภายใน หรือ manual)
+
+
+ถ้าโมเดลเราสำเร็จ ใครในองค์กรจะเป็นผู้ใช้งานหลักหรือเป็นเจ้าของระบบนี้?
+ (จะช่วยให้เรารู้ว่าจะออกแบบ Interface หรือ Output แบบไหน)
+
+
+
+🧑‍💻 คำถามสำหรับ Technical Consultant (เทคนิค/ข้อมูล)
+📌 ด้านข้อมูลและข้อจำกัดเชิงระบบ
+Warehouse Capacity ที่ให้มา เป็นตัวเลขตายตัวตลอดทั้งปี หรือสามารถเปลี่ยนแปลงได้ตามเดือน/สถานการณ์?
+
+
+ในไฟล์ Material Master มีข้อมูลที่บ่งบอกความสำคัญของสินค้าแต่ละประเภทไหม?
+ (เพื่อให้เราเลือก optimize แบบ SKU สำคัญก่อน)
+
+
+เราต้องคำนึงถึง Shelf Life หรือ อายุของสินค้า ในการ forecast หรือไม่?
+ (เช่น ถ้าสต๊อกเก่านานไปจะต้อง discard หรือ downgrade)
+
+
+Forecast.xlsx ที่ให้มา ถือเป็นแผนยอดขายที่ confirm แล้ว หรือเป็นแค่ประมาณการ?
+
+
+ใน WH Calendar มีข้อมูลวันหยุด/วันทำงาน ที่กระทบกับการรับหรือส่งสินค้าหรือไม่?
+
+
+เราควรทำการวิเคราะห์หรือโมเดลในระดับ SKU หรือทำในภาพรวมของคลังสินค้า?
+
+
+มีข้อมูลหรือ flag ว่าเคยเกิด Overflow จริง ๆ เมื่อใดบ้างไหม? (เพื่อใช้เป็น label สำหรับ train model)
+
+
+
+🤖 คำถามสำหรับมุม Gen AI / Use Case พิเศษ
+ถ้าเราสร้างระบบแจ้งเตือนที่สามารถอธิบายให้ Planner ฟังได้ว่า ‘ทำไมคลังถึงจะ Overflow’ ได้ จะเป็นประโยชน์ไหม?
+ (เช่น "เพราะ inbound เพิ่มขึ้น 30% แต่ outbound ลดลงต่อเนื่อง")
+
+
+ทางธุรกิจมี use case ที่ต้องการระบบ simulation ไหม เช่น “ถ้าเลื่อน shipment ออกไป 2 สัปดาห์จะเกิดอะไรขึ้น”?
+
+
+
+
+
+Here is the provided data
+	Data source / Column	Description
+	Inventory	"Actual Monthly inventory snapsnot captured at the end of each month.
+Granularity is at Plant + Material + Batch."
+	BALANCE_AS_OF_DATE	The time inventory snapshot is recorded
+	PLANT_NAME	Name of the plant/warehouse
+	MATERIAL_NAME	Product that is being stocked
+	BATCH_NUMBER	"Group of material produced in the same production run or shares the same specifications.
+Similar in concepts of vaccines batch, iphone production lot"
+	UNRESRICTED_STOCK	Total quantity of a material batch that is physically available in the warehouse
+	STOCK_UNIT	Unit of measurement for unrestricted stock
+	STOCK_SELL_VALUE	Sell value of the inventory record (material, batch, stock quanity)
+	CURRENCY	Currency for stock sell value
+		
+	Inbound	Actual Transactions of material imports into each warehouse
+	INBOUND_DATE	Transaction date
+	PLANT_NAME	Name of the plant/warehouse
+	MATERIAL_NAME	Product that is being imported into the warehouse
+	NET_QUANTITY_MT	Total quantity in Metric ton
+		
+	Outbound	Actual Transaction of material exports out of each warehouse - represent sales with customer
+	OUTBOUND_DATE	Transaction date
+	PLANT_NAME	Name of the plant/warehouse
+	MODE_OF_TRANSPORT	Transportation methold - Truck, Marine
+	MATERIAL_NAME	Product that is being shipped out
+	CUSTOMER_NUMBER	Receipient of the material in the outbound transaction
+	NET_QUANTITY_MT	Total quantity in Metric ton
+		
+	Material	Material master data
+	MATERIAL_NAME	Product that is being stocked, imported, shipped out
+	POLYMER_TYPE	Material Polymer type
+	SHELF_LIFE_IN_MONTH	"Number of months each material batch can be stored in the warehouse without losing quality.
+Material batch past shelf-life will be downgraded to lower quality"
+	DOWNGRADE_VALUE_LOST_PERCENT	Average sell value lost for material batch past shelf-life (downgraded). Unit it is Percent.
+		
+	OperationCost	Warehouse storage/transfer cost
+	Inventory Storage per MT per day	"Cost of storage per MT per day.
+Applicable for planned warehouse capacity and temporary additional storage to prevent overflow
+Example - due to higher inbound than planned, ask for extra 10 Kilo Ton for the next 3 months. Additional cost = this column * 10 * 90"
+	Transfer cost per container (24.75MT)	"Transportation cost per container.
+Potential overflow prevention, transfer some materail batch to other warehouse. Material needs to be transfered by a 24.75MT container.
+Example - due to lower outbound than planned, shipped out 110 MT of material to other warehouses. Additional cost = this column * 5 (5 containers requried)"
+		
+	Forecast	Forecasted outbound (sales) and maximum capacity of each warehouse
+	Predicted Outbound (KT)	Outbound forecast of each month. Can be compare with actual in Outbound.
+	Predicted Inventory (KT)	Inventory forecast of each month. Can be compare with actual in Inventory.
+		
+	Appendix	
+	MT	Metric Ton
+	KT	Kiloton (1000MT)
+
+Examples of data
+Inbound
+INBOUND_DATE,PLANT_NAME,MATERIAL_NAME,NET_QUANTITY_MT
+2023/12/15,SINGAPORE-WAREHOUSE,MAT-0354,23.375
+2023/12/22,SINGAPORE-WAREHOUSE,MAT-0413,1.375
+2023/12/22,SINGAPORE-WAREHOUSE,MAT-0413,23.375
+2023/12/22,SINGAPORE-WAREHOUSE,MAT-0413,24.75
+
+Inventory
+BALANCE_AS_OF_DATE,PLANT_NAME,MATERIAL_NAME,BATCH_NUMBER,UNRESRICTED_STOCK,STOCK_UNIT,STOCK_SELL_VALUE,CURRENCY
+12/31/2023,CHINA-WAREHOUSE,MAT-0045,SCRAP,164,KG,211,CNY
+12/31/2023,CHINA-WAREHOUSE,MAT-0193,6024,0,KG,87666,CNY
+12/31/2023,CHINA-WAREHOUSE,MAT-0193,5755,70720,KG,414419,CNY
+12/31/2023,CHINA-WAREHOUSE,MAT-0193,3142,12240,KG,71726,CNY
+
+Material
+MATERIAL_NAME,POLYMER_TYPE,SHELF_LIFE_IN_MONTH,DOWNGRADE_VALUE_LOST_PERCENT
+MAT-0001,P-002,3,40
+
+MAT-0002,P-001,8,15
+MAT-0003,P-004,2,35
+
+OperationCost
+Operation,Plant/Mode of Transport,Cost,Currency
+Inventory Storage per MT per day,SINGAPORE WAREHOUSE,15,SGD
+Inventory Storage per MT per day,CHINA WAREHOUSE,1.7,CNY
+Transfer cost per container (24.75MT),Truck,150,SGD
+Transfer cost per container (24.75MT),Marine,75,USD
+
+Outbound
+OUTBOUND_DATE,PLANT_NAME,MODE_OF_TRANSPORT,MATERIAL_NAME,CUSTOMER_NUMBER,NET_QUANTITY_MT
+2024/01/02,CHINA-WAREHOUSE,Truck,MAT-0013,CST-00001,25.5
+2024/01/02,CHINA-WAREHOUSE,Truck,MAT-0013,CST-00001,25.5
+2024/01/02,CHINA-WAREHOUSE,Truck,MAT-0268,CST-00002,25.5
+
+
+I have created the merged_column.csv that is generated using this code
+import pandas as pd
+import itertools
+
+df_inbound['INBOUND_DATE'] = pd.to_datetime(df_inbound['INBOUND_DATE'], errors='coerce')
+df_inbound = df_inbound.dropna(subset=['INBOUND_DATE', 'MATERIAL_NAME', 'PLANT_NAME'])
+df_inbound['INBOUND_QTY_MT'] = df_inbound['NET_QUANTITY_MT']
+df_inbound = df_inbound.drop(columns=['NET_QUANTITY_MT'])
+
+df_outbound['OUTBOUND_DATE'] = pd.to_datetime(df_outbound['OUTBOUND_DATE'], errors='coerce')
+df_outbound = df_outbound.dropna(subset=['OUTBOUND_DATE', 'MATERIAL_NAME', 'PLANT_NAME'])
+df_outbound['OUTBOUND_QTY_MT'] = df_outbound['NET_QUANTITY_MT']
+df_outbound = df_outbound.drop(columns=['NET_QUANTITY_MT'])
+
+if 'INVENTORY_DATE' not in df_inventory.columns and 'BALANCE_AS_OF_DATE' in df_inventory.columns:
+    df_inventory['INVENTORY_DATE'] = pd.to_datetime(df_inventory['BALANCE_AS_OF_DATE'], errors='coerce')
+else:
+    df_inventory['INVENTORY_DATE'] = pd.to_datetime(df_inventory['INVENTORY_DATE'], errors='coerce')
+
+df_inventory = df_inventory.dropna(subset=['INVENTORY_DATE', 'MATERIAL_NAME', 'PLANT_NAME', 'BATCH_NUMBER'])
+df_inventory['UNRESRICTED_STOCK_MT'] = df_inventory['UNRESRICTED_STOCK'] / 1000
+
+df_master = df_material_master[['MATERIAL_NAME', 'POLYMER_TYPE', 'SHELF_LIFE_IN_MONTH', 'DOWNGRADE_VALUE_LOST_PERCENT']]
+
+calendar_days = pd.date_range(start="2024-01-01", end="2024-12-31", freq="D")
+
+material_plant = pd.concat([
+    df_inbound[['MATERIAL_NAME', 'PLANT_NAME']],
+    df_outbound[['MATERIAL_NAME', 'PLANT_NAME']],
+    df_inventory[['MATERIAL_NAME', 'PLANT_NAME']]
+]).drop_duplicates()
+
+full_calendar = pd.DataFrame(
+    list(itertools.product(
+        calendar_days,
+        material_plant['MATERIAL_NAME'].unique(),
+        material_plant['PLANT_NAME'].unique()
+    )),
+    columns=['DATE', 'MATERIAL_NAME', 'PLANT_NAME']
+)
+
+full_calendar = full_calendar.merge(
+    material_plant,
+    on=['MATERIAL_NAME','PLANT_NAME'],
+    how='inner'
+)
+
+# aggregate outbound
+outbound_summary = df_outbound.groupby(
+    ['OUTBOUND_DATE','MATERIAL_NAME','PLANT_NAME']
+).agg({
+    'OUTBOUND_QTY_MT': 'sum',
+    'MODE_OF_TRANSPORT': 'first'
+}).reset_index()
+
+# aggregate inventory
+inventory_summary = df_inventory.groupby(
+    ['INVENTORY_DATE','MATERIAL_NAME','PLANT_NAME']
+).agg({
+    'UNRESRICTED_STOCK_MT': 'sum',
+    'STOCK_UNIT': 'first',
+    'STOCK_SELL_VALUE': 'sum',
+    'CURRENCY': 'first'
+}).reset_index()
+
+merged = pd.merge(
+    full_calendar,
+    df_inbound[['INBOUND_DATE', 'MATERIAL_NAME', 'PLANT_NAME', 'INBOUND_QTY_MT']],
+    left_on=['DATE','MATERIAL_NAME','PLANT_NAME'],
+    right_on=['INBOUND_DATE','MATERIAL_NAME','PLANT_NAME'],
+    how='left'
+)
+
+merged = pd.merge(
+    merged,
+    outbound_summary,
+    left_on=['DATE','MATERIAL_NAME','PLANT_NAME'],
+    right_on=['OUTBOUND_DATE','MATERIAL_NAME','PLANT_NAME'],
+    how='left'
+)
+
+merged = pd.merge(
+    merged,
+    inventory_summary,
+    left_on=['DATE','MATERIAL_NAME','PLANT_NAME'],
+    right_on=['INVENTORY_DATE','MATERIAL_NAME','PLANT_NAME'],
+    how='left'
+)
+
+merged = pd.merge(
+    merged,
+    df_master,
+    on='MATERIAL_NAME',
+    how='left'
+)
+
+merged = merged.drop(columns=['INBOUND_DATE','OUTBOUND_DATE','INVENTORY_DATE'])
+merged = merged.sort_values(['MATERIAL_NAME','PLANT_NAME','DATE'])
+
+print(merged.head())
+print(f"Total rows in daily calendar: {len(merged)}")
+
+
+Here is examples of the merged_column.csv
+DATE,MATERIAL_NAME,PLANT_NAME,INBOUND_QTY_MT,OUTBOUND_QTY_MT,MODE_OF_TRANSPORT,UNRESRICTED_STOCK_MT,STOCK_UNIT,STOCK_SELL_VALUE,CURRENCY,POLYMER_TYPE,SHELF_LIFE_IN_MONTH,DOWNGRADE_VALUE_LOST_PERCENT
+01-01-2024,MAT-0001,CHINA-WAREHOUSE,,,,,,,,P-002,3,40
+01-02-2024,MAT-0001,CHINA-WAREHOUSE,,,,,,,,P-002,3,40
+01-03-2024,MAT-0001,CHINA-WAREHOUSE,,25.5,Truck,,,,,P-002,3,40
+01-04-2024,MAT-0001,CHINA-WAREHOUSE,,,,,,,,P-002,3,40
+
+
+Please generate the code for all the machine learning model process (eda, feature engineering, model, evaluation)
