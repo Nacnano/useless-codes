@@ -1,3 +1,7 @@
 {
-    "DockerRun.DisableAutoGenerateConfig": true
+  "DockerRun.DisableAutoGenerateConfig": true,
+  "files.associations": {
+    "*.json": "json",
+    "iostream": "cpp"
+  }
 }
